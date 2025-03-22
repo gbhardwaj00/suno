@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Button, Image, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { getAuth } from 'firebase/auth';
+import { View, Button, Image, Text, ActivityIndicator, StyleSheet, TextInput } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { storage, db } from '../../firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -8,6 +9,8 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 export default function UploadScreen() {
   const [image, setImage] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [caption, setCaption] = useState('');
+  const [location, setLocation] = useState('');
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -26,26 +29,39 @@ export default function UploadScreen() {
     if (!image) return;
 
     setUploading(true);
-    const response = await fetch(image);
-    const blob = await response.blob();
-    const filename = `photos/${new Date().toISOString()}.jpg`;
-    const storageRef = ref(storage, filename);
-
+    const auth = getAuth();
+    const uid = auth.currentUser?.uid;
     try {
+      // Upload to storage
+      const response = await fetch(image);
+      const blob = await response.blob();
+      const fileName = `uploads/${Date.now()}.jpg`;
+      const storageRef = ref(storage, fileName);
       await uploadBytes(storageRef, blob);
+
       const downloadURL = await getDownloadURL(storageRef);
 
-      await addDoc(collection(db, 'submissions'), {
-        url: downloadURL,
+      console.log("Upload to storage successful");
+    
+      // Save metadata to Firestore
+      await addDoc(collection(db, 'uploads'), {
+        imageUrl: downloadURL,
+        caption,
+        location,
         timestamp: serverTimestamp(),
+        userId: auth.currentUser?.uid || 'unknown',
       });
-
-      alert('Photo submitted!');
+      console.log("Metadata saved to Firestore");
+    
+      alert("Upload successful!");
       setImage(null);
+      setCaption('');
+      setLocation('');
     } catch (error) {
-      console.error('Upload error:', error);
-      alert('Upload failed');
+      console.error("Upload error:", error);
+      alert("Upload failed");
     }
+    
     setUploading(false);
   };
 
@@ -53,6 +69,19 @@ export default function UploadScreen() {
     <View style={styles.container}>
       {image && <Image source={{ uri: image }} style={styles.image} />}
       <Button title="Pick an Image" onPress={pickImage} />
+      <TextInput
+        placeholder="Enter a caption"
+        value={caption}
+        onChangeText={setCaption}
+        style={styles.input}
+      />
+
+      <TextInput
+        placeholder="Location (optional)"
+        value={location}
+        onChangeText={setLocation}
+        style={styles.input}
+      />
       {uploading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
@@ -65,4 +94,12 @@ export default function UploadScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   image: { width: '90%', height: 300, marginBottom: 10 },
+  input: {
+    width: '90%',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 8,
+  },
 });

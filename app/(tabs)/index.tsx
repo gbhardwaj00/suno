@@ -1,4 +1,6 @@
 import '../../firebaseConfig';
+import { useAnonymousAuth } from '../hooks/useAnonymousAuth';
+
 
 import React, { useEffect, useState } from 'react';
 import { View, Image, Text, ActivityIndicator, StyleSheet } from 'react-native';
@@ -8,6 +10,8 @@ import { doc, getDoc } from 'firebase/firestore';
 export default function HomeScreen() {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+
+  useAnonymousAuth();
 
   useEffect(() => {
     const fetchDailyPhoto = async () => {
