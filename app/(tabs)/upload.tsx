@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { getAuth } from 'firebase/auth';
+import React, { useEffect, useState } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { View, Button, Image, Text, ActivityIndicator, StyleSheet, TextInput } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { storage, db } from '../../firebaseConfig';
@@ -11,6 +11,21 @@ export default function UploadScreen() {
   const [uploading, setUploading] = useState(false);
   const [caption, setCaption] = useState('');
   const [location, setLocation] = useState('');
+
+  const auth = getAuth();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log('User UID:', user.uid); // ✅ Always logs correctly
+        // You can now safely upload/fetch data
+      } else {
+        console.log('No user signed in.');
+      }
+    });
+  
+    return () => unsubscribe();
+  }, []);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -29,8 +44,6 @@ export default function UploadScreen() {
     if (!image) return;
 
     setUploading(true);
-    const auth = getAuth();
-    const uid = auth.currentUser?.uid;
     try {
       // Upload to storage
       const response = await fetch(image);
