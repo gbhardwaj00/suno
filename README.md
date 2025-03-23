@@ -33,7 +33,7 @@ This app is powered by:
 ## 📌 Current Features
 
 - ✅ Users can upload a photo with an optional caption + location
-- ✅ Anonymous sign-in (no account needed)
+- ✅ Anonymous sign-in (no account needed) 
 - ✅ Cloud Function picks a random image from the last 24 hrs
 - ✅ Home screen shows the selected image globally
 - ✅ Pull-to-refresh shows the latest without caching
@@ -49,6 +49,7 @@ Here’s what I’m working on next:
 - [ ] Optional approval before photo goes public
 - [ ] "You got picked today!" notification or badge
 - [ ] Light PWA theming for web version
+- [ ] Creation of user accounts
 
 ---
 
@@ -113,42 +114,10 @@ This sets up the scheduled function to run daily (or every 5 mins during testing
 
 ---
 
-## 🗂 .gitignore (Recommended)
 
-```gitignore
-# Firebase
-firebaseConfig.js
-.env
-.env.local
-
-# Node
-node_modules/
-functions/node_modules/
-
-# Expo / Metro
-.expo/
-.expo-shared/
-dist/
-
-# System
-.DS_Store
-Thumbs.db
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-```
-
----
-
-## 👋 About Me
-
-Hey! I'm **Gourav** — a developer exploring minimal, meaningful ideas through code.
 
 This project is one of those ideas — inspired by randomness, presence, and connection.
 
-Feel free to follow along or reach out!  
-[LinkedIn](https://www.linkedin.com/) • [GitHub](https://github.com/your-username)
 
 ---
 
