@@ -1,50 +1,155 @@
-# Welcome to your Expo app 👋
+# 🌍 One Photo A Day — *In Progress*
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Welcome to **One Photo A Day**, a minimalist social experiment I'm building to explore global connection through a single shared image every 24 hours.
 
-## Get started
+This project is **a work in progress** — I'm actively developing and refining it. Feel free to explore the code, try the app, or follow along as it evolves!
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## 🎯 Goal
 
-2. Start the app
+Build a simple mobile + web app where:
+- Anyone in the world can upload a photo at any time
+- Once a day, **one random photo** is selected from the past 24 hours
+- That photo becomes the **only visible post** on the home screen for everyone
+- No likes. No comments. No following. Just **presence**.
 
-   ```bash
-    npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+## ⚙️ Tech Stack
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+This app is powered by:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- **Expo + React Native** (multi-platform mobile & web)
+- **Firebase**
+  - 🔐 Anonymous Auth
+  - 🔥 Firestore (realtime DB)
+  - 📦 Storage (for uploaded images)
+  - ☁️ Cloud Functions (to pick daily photo automatically)
+- **TypeScript**
 
-## Get a fresh project
+---
 
-When you're ready, run:
+## 📌 Current Features
 
+- ✅ Users can upload a photo with an optional caption + location
+- ✅ Anonymous sign-in (no account needed)
+- ✅ Cloud Function picks a random image from the last 24 hrs
+- ✅ Home screen shows the selected image globally
+- ✅ Pull-to-refresh shows the latest without caching
+
+---
+
+## 🚧 In Progress
+
+Here’s what I’m working on next:
+
+- [ ] Auto-refresh daily photo when the app is reopened
+- [ ] Archive mode to view past daily picks
+- [ ] Optional approval before photo goes public
+- [ ] "You got picked today!" notification or badge
+- [ ] Light PWA theming for web version
+
+---
+
+## 🧠 Setup
+
+### 1. Clone & install
 ```bash
-npm run reset-project
+git clone https://github.com/your-username/one-photo-a-day.git
+cd one-photo-a-day
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Firebase Config
+Create a `firebaseConfig.js` in your root folder and add your Firebase project credentials.
 
-## Learn more
+```js
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
-To learn more about developing your project with Expo, look at the following resources:
+const firebaseConfig = {
+  apiKey: '...',
+  authDomain: '...',
+  projectId: '...',
+  storageBucket: '...',
+  messagingSenderId: '...',
+  appId: '...',
+};
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+const app = initializeApp(firebaseConfig);
 
-## Join the community
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
+```
 
-Join our community of developers creating universal apps.
+Make sure:
+- Firestore is enabled
+- Firebase Storage is public (for now)
+- Anonymous auth is turned on
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+---
+
+### 3. Start the app
+```bash
+npx expo start
+```
+
+Choose iOS, Android, or Web!
+
+---
+
+### 4. Deploy Cloud Functions
+Go to the `functions/` folder and run:
+
+```bash
+firebase deploy --only functions
+```
+
+This sets up the scheduled function to run daily (or every 5 mins during testing).
+
+---
+
+## 🗂 .gitignore (Recommended)
+
+```gitignore
+# Firebase
+firebaseConfig.js
+.env
+.env.local
+
+# Node
+node_modules/
+functions/node_modules/
+
+# Expo / Metro
+.expo/
+.expo-shared/
+dist/
+
+# System
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+```
+
+---
+
+## 👋 About Me
+
+Hey! I'm **Gourav** — a developer exploring minimal, meaningful ideas through code.
+
+This project is one of those ideas — inspired by randomness, presence, and connection.
+
+Feel free to follow along or reach out!  
+[LinkedIn](https://www.linkedin.com/) • [GitHub](https://github.com/your-username)
+
+---
+
+> ⚠️ Still in progress — features and structure may change over time.
